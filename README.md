@@ -17,10 +17,9 @@ Why FHE is required: encryption in transit alone is insufficient because values 
 
 ## 🏗️ Architecture (3 Layers)
 
-```mermaid
-flowchart TD
-  A[App Layer\nReact + Vite + @cofhe/react + wagmi] --> B[Host Chain Layer\nArbitrum Sepolia\nPayShieldPayroll, Registry, Escrow, Pool]
-  B --> C[CoFHE Layer\nCiphertext ops + threshold decryption]
+```
+<img width="3500" height="3500" alt="diagram_1" src="https://github.com/user-attachments/assets/3ecf195e-6c41-411a-a3b9-48ec3ddc73e2" />
+
 ```
 
 ### 📚 Layer Responsibilities
