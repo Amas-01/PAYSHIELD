@@ -10,7 +10,12 @@ const ARBITRUM_SEPOLIA_RPC_URL =
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.24",
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      evmVersion: "cancun",
+    },
+  },
   networks: {
     arbitrumSepolia: {
       url: ARBITRUM_SEPOLIA_RPC_URL,

@@ -17,10 +17,7 @@ Why FHE is required: encryption in transit alone is insufficient because values 
 
 ## 🏗️ Architecture (3 Layers)
 
-```
-<img width="3500" height="3500" alt="diagram_1" src="https://github.com/user-attachments/assets/3ecf195e-6c41-411a-a3b9-48ec3ddc73e2" />
-
-```
+![PayShield Architecture](image/diagram_1.png)
 
 ### 📚 Layer Responsibilities
 
@@ -117,18 +114,72 @@ cd ../frontend
 npm install
 ```
 
-## 🧾 Commit Message Convention
+## ✅ Wave 2 Validation
 
-Pattern:
+Executed in `backend/`:
 
-```text
-<type>(<scope>): <short description>
+```bash
+HARDHAT_DISABLE_VSCODE_INSTALL_PROMPT=true npx hardhat test
+HARDHAT_DISABLE_VSCODE_INSTALL_PROMPT=true npx hardhat typechain
 ```
 
-Types: `feat | fix | test | docs | chore | refactor | deploy`
+Test output:
 
-Examples:
+```text
+PayShieldEscrow
+    ✔ uses silent failure when payroll is not confirmed
+    ✔ releases payout after employer confirms payroll
 
-- `feat(contracts): add PayShieldPayroll.sol with FHE.mul payroll computation`
-- `feat(frontend): add EmployerDashboard with @cofhe/react input encryption`
-- `deploy(arb-sepolia): deploy all contracts and persist addresses`
+PayShieldPayroll
+    ✔ computes encrypted net pay with FHE.mul and keeps values encrypted
+    ✔ marks payroll as employer-confirmed
+
+PayShieldRegistry
+    ✔ registers contractor and stores employer contractor list
+    ✔ enforces Active -> Paid -> Disputed transitions
+
+6 passing
+```
+
+Judge-signal assertion is included in `backend/test/PayShieldPayroll.test.ts` via:
+
+- `hre.cofhe.mocks.expectPlaintext(netPayHandle, 1000n)`
+
+This confirms ciphertext payroll multiplication correctness without exposing plaintext on-chain.
+
+## 🌊 Wave 3 Status
+
+Completed:
+
+- Frontend encrypted payroll flow in `EmployerDashboard.tsx` + `PayrollForm.tsx`
+- Contractor decrypt flow in `ContractorView.tsx`
+- Pool funding flow in `PoolFunding.tsx`
+- `useFHE.ts` encrypt/decrypt helper hook using CoFHE client and permits
+- `usePayroll.ts` wagmi contract interaction hook
+- Frontend production build passes (`npm run build`)
+
+Pending external runtime inputs for full testnet demo:
+
+- Set frontend env vars (`VITE_PAYSHIELD_*` addresses, RPC URL)
+- Set backend `.env` value `USDC_ADDRESS` (deployment currently fails fast if missing)
+- Deploy contracts on Arbitrum Sepolia and save addresses to `backend/deployments/`
+
+## 📚 Resources
+ 
+- [Fhenix CoFHE Docs](https://cofhe-docs.fhenix.zone/)
+- [CoFHE Hardhat Starter](https://github.com/fhenixprotocol/cofhe-hardhat-starter)
+- [Privara / ReineiraOS Docs](https://reineira.xyz/docs)
+- [Privara SDK on npm](https://www.npmjs.com/package/@reineira-os/sdk)
+- [Awesome Fhenix Examples](https://github.com/FhenixProtocol/awesome-fhenix)
+- [Arbitrum Sepolia Faucet](https://faucet.quicknode.com/arbitrum/sepolia)
+ 
+---
+ 
+## 📄 License
+ 
+MIT © 2025 PayShield Contributors
+ 
+---
+ 
+> *PayShield is built for the gig worker who deserves privacy, the employer who needs compliance, and the protocol that makes both possible — without compromise.*
+ 

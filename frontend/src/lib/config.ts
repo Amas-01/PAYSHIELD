@@ -1,8 +1,69 @@
 export const CHAIN_ID = 421614;
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
+
 export const CONTRACT_ADDRESSES = {
-  payroll: "",
-  registry: "",
-  escrow: "",
-  pool: "",
+  payroll: (import.meta.env.VITE_PAYSHIELD_PAYROLL_ADDRESS as `0x${string}` | undefined) ?? ZERO_ADDRESS,
+  registry: (import.meta.env.VITE_PAYSHIELD_REGISTRY_ADDRESS as `0x${string}` | undefined) ?? ZERO_ADDRESS,
+  escrow: (import.meta.env.VITE_PAYSHIELD_ESCROW_ADDRESS as `0x${string}` | undefined) ?? ZERO_ADDRESS,
+  pool: (import.meta.env.VITE_PAYSHIELD_POOL_ADDRESS as `0x${string}` | undefined) ?? ZERO_ADDRESS,
 };
+
+export const PAYSHIELD_PAYROLL_ABI = [
+  {
+    type: "function",
+    name: "submitPayroll",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "contractor", type: "address" },
+      {
+        name: "encryptedHours",
+        type: "tuple",
+        components: [
+          { name: "ctHash", type: "uint256" },
+          { name: "securityZone", type: "uint8" },
+          { name: "utype", type: "uint8" },
+          { name: "signature", type: "bytes" },
+        ],
+      },
+      {
+        name: "encryptedRate",
+        type: "tuple",
+        components: [
+          { name: "ctHash", type: "uint256" },
+          { name: "securityZone", type: "uint8" },
+          { name: "utype", type: "uint8" },
+          { name: "signature", type: "bytes" },
+        ],
+      },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "confirmPayroll",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "contractor", type: "address" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "getNetPay",
+    stateMutability: "view",
+    inputs: [
+      { name: "employer", type: "address" },
+      { name: "contractor", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bytes32" }],
+  },
+] as const;
+
+export const PAYSHIELD_POOL_ABI = [
+  {
+    type: "function",
+    name: "deposit",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "amount", type: "uint256" }],
+    outputs: [],
+  },
+] as const;

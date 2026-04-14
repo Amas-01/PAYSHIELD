@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="96" y1="64" x2="416" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="0.52" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="156" y1="128" x2="356" y2="384" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="182" y1="176" x2="330" y2="336" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#93C5FD"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="120" fill="url(#bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="100" fill="white" fill-opacity="0.08" stroke="white" stroke-opacity="0.16"/>
+  <path d="M256 118L360 160V248C360 321 314.6 372.5 256 404C197.4 372.5 152 321 152 248V160L256 118Z" fill="url(#shield)" stroke="white" stroke-opacity="0.9" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M256 154L326 182V246C326 297.1 294.1 333.6 256 356C217.9 333.6 186 297.1 186 246V182L256 154Z" fill="url(#ring)" opacity="0.9"/>
+  <path d="M216 254L244 282L298 226" stroke="#0F172A" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="186" y="302" width="140" height="22" rx="11" fill="#0F172A" fill-opacity="0.12"/>
+  <path d="M202 214H310" stroke="#0F172A" stroke-opacity="0.16" stroke-width="12" stroke-linecap="round"/>
+  <path d="M202 346H310" stroke="#0F172A" stroke-opacity="0.12" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="256" cy="94" r="10" fill="white" fill-opacity="0.82"/>
+</svg>
