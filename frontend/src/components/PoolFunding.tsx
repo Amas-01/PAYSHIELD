@@ -15,7 +15,7 @@ function PoolFunding() {
   const { address: employerAddress } = useAccount();
   const publicClient = usePublicClient();
   const { writeContractAsync } = useWriteContract();
-  const { prepareStablecoinDisbursement, depositToPoolWithStatus } = usePayroll();
+  const { prepareStablecoinDisbursement, depositToPoolWithStatus, getFeeOverrides } = usePayroll();
 
   // Fetch token address and balance/allowance
   useEffect(() => {
@@ -58,6 +58,32 @@ function PoolFunding() {
     })();
   }, [publicClient, employerAddress]);
 
+  // Refresh balance and allowance after mint or deposit
+  const refreshBalanceAndAllowance = async () => {
+    if (!publicClient || !employerAddress || !tokenAddress) return;
+
+    try {
+      const [bal, alw] = await Promise.all([
+        publicClient.readContract({
+          address: tokenAddress,
+          abi: ERC20_ABI,
+          functionName: "balanceOf",
+          args: [employerAddress as `0x${string}`],
+        }),
+        publicClient.readContract({
+          address: tokenAddress,
+          abi: ERC20_ABI,
+          functionName: "allowance",
+          args: [employerAddress as `0x${string}`, CONTRACT_ADDRESSES.pool],
+        }),
+      ]);
+      setBalance((Number(bal) / 1_000_000).toFixed(2));
+      setAllowance((Number(alw) / 1_000_000).toFixed(2));
+    } catch (e) {
+      console.error("Failed to refresh balance/allowance:", e);
+    }
+  };
+
   const handleMint = async () => {
     if (!tokenAddress || !employerAddress) {
       setMintStatus("Please connect wallet first");
@@ -68,26 +94,20 @@ function PoolFunding() {
       setIsMinting(true);
       setMintStatus("Minting test tokens...");
       const mintAmount = BigInt(Math.round(100 * 1_000_000));
+      const gasOverrides = await getFeeOverrides();
       const hash = await writeContractAsync({
         address: tokenAddress,
         abi: MOCK_TOKEN_ABI,
         functionName: "mint",
         args: [employerAddress, mintAmount],
+        ...gasOverrides,
       });
       setMintStatus("Minting in progress...");
       await publicClient?.waitForTransactionReceipt({ hash });
       setMintStatus("✓ Minted 100 test tokens");
-      // Refresh balance after mint
-      setTimeout(async () => {
-        const newBalance = await publicClient?.readContract({
-          address: tokenAddress,
-          abi: ERC20_ABI,
-          functionName: "balanceOf",
-          args: [employerAddress],
-        });
-        setBalance((Number(newBalance) / 1_000_000).toFixed(2));
-        setMintStatus("");
-      }, 2000);
+      // Refresh balance and allowance after mint
+      setTimeout(() => refreshBalanceAndAllowance(), 1500);
+      setTimeout(() => setMintStatus(""), 3000);
     } catch (error) {
       setMintStatus(formatUserError(error));
     } finally {
@@ -111,6 +131,8 @@ function PoolFunding() {
 
       await depositToPoolWithStatus(baseUnits, setStatus);
       setStatus(`Pool funded with ${amount} USDC`);
+      // Refresh balance and allowance after successful deposit
+      setTimeout(() => refreshBalanceAndAllowance(), 1500);
     } catch (error) {
       setStatus(formatUserError(error));
     }

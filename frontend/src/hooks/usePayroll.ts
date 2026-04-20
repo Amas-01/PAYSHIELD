@@ -179,11 +179,13 @@ export function usePayroll() {
 
     if (allowance < amount) {
       const approveFeeOverrides = await getFeeOverrides();
+      // Approve unlimited (max uint256) to avoid re-approval on future deposits
+      const maxApproval = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
       const approveHash = await writeContractAsync({
         address: poolTokenAddress,
         abi: ERC20_ABI,
         functionName: "approve",
-        args: [CONTRACT_ADDRESSES.pool, amount],
+        args: [CONTRACT_ADDRESSES.pool, maxApproval],
         ...approveFeeOverrides,
       });
 
@@ -238,11 +240,13 @@ export function usePayroll() {
     if (allowance < amount) {
       onStatusChange?.("Approving pool to spend USDC...");
       const approveFeeOverrides = await getFeeOverrides();
+      // Approve unlimited (max uint256) to avoid re-approval on future deposits
+      const maxApproval = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
       const approveHash = await writeContractAsync({
         address: poolTokenAddress,
         abi: ERC20_ABI,
         functionName: "approve",
-        args: [CONTRACT_ADDRESSES.pool, amount],
+        args: [CONTRACT_ADDRESSES.pool, maxApproval],
         ...approveFeeOverrides,
       });
 
@@ -267,6 +271,7 @@ export function usePayroll() {
     isPending,
     isConfigured,
     receipt,
+    getFeeOverrides,
     submitPayroll,
     confirmPayroll,
     prepareStablecoinDisbursement,
